@@ -1,0 +1,22 @@
+https://node.university 
+https://standardjs.com 
+
+https://github.com/azat-co/practicalnode 
+
+https://github.com/nodejs/LTS 
+
+https://github.com/nodejs/node/blob/master/BUILDING.md 
+
+http://www.commonjs.org
+
+http://requirejs.org
+
+http://nodejs.org/api/ 
+
+http://pug-lang.com/command-line 
+
+https://github.com/substack/node-browserify
+
+
+
+Handlebars: is another template engine. 

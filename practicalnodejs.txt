@@ -1,0 +1,1356 @@
+Node.js/JavaScript Fundamentals:
+    Loose typing: 
+        atomatic type casing works most of the time. 
+        Some primitives are: 
+            String, Number (both integer and real), Boolean, 
+            Undefined, Null and RegExp.
+        Everything else is objects. == performs automatic typecasting 
+        where === does not. 
+
+    Buffer - nodejs super data type: 
+        Think of buffer as extremely efficient data stores. In fact, 
+        Nodejs tries to use buffer anytime it can.  
+        Remember, functions are also objects. 
+
+    Object literal notation:
+        var obj = function(){
+            this.color = "green", 
+            this.type = "suv",
+            this.owner {
+                ...
+            }
+        }
+     
+    Functions:
+        Functions are first class citizens and we treat them 
+        as variable because they are objects. Functions can have properties/
+        attributes.  
+
+        Define function: 
+        named expression
+            function f (){
+                console.log('Hi');
+                return true;
+            }
+        anonymous
+            var f = function f (){
+                console.log('Hi');
+                return true;
+            }
+            In this case, the function is not hoisted. 
+        with property
+            var f = function () {console.log('Boo');}
+            f.boo = 1;
+            f(); //outputs Boo
+            console.log(f.boo); //outputs 1
+
+        Pass functions as Parameters
+        We can pass function as parameters to another function (usually
+        callbacks in nodejs). 
+            var convertNum = function (num){
+                return num + 10;
+            }
+
+            var processNum = function (num fn){
+                return fn(num);
+            }
+            processNum(10, convertNum);
+        function definition: function f() {}
+        function invocation: f();
+
+    Arrays :
+        arrays are also objects that have special methods inherited from 
+        Array.prototype global object. 
+        var arr = [];
+        var arr2 = [1, "Hi", {a:2}, function () {console.log('boo');}];
+        var arr3 = new Array();
+        var arr4 = new Array(1,"Hi", {a:2}, function () {console.log('boo');});
+
+    Prototypal nature 
+        There is no classes in JS because objects inherit directly from other 
+        objects, which is called prototypical inheritance. 
+        There are few types of inheritance patterns in JS. 
+        -- classical 
+        -- pseudoclassical 
+        -- functional 
+            var user = function (ops){
+                return {firstName: ops.name || 'John',
+                        lastName: ops.name || 'Doe',
+                        email: ops.email || 'test@test.com',
+                        name: function() {return this.firstName + this.lastName}
+            }
+
+            var agency = function(ops) {
+                ops = ops || {}
+                var agency = user(ops)
+                agency.customers = ops.customers || 0
+                agency.isAgency = true
+                return agency
+            }
+
+        Coventions: Semicolons, camelCase, Naming, Commas, Identations, 
+                    Whitespace. 
+                    Class Names are CapitalCamelCase just like in JAVA. 
+        Naming: _ and $ are legal for literals. Private methods and attributes 
+        starts with _ (and it does nothing by itself)
+
+    Node.js Global and Reserved Keywords: 
+        In browser, we have a window object. However, in Node.js, it is absent but we have the 
+        following. 
+        -- process 
+            Each nodejs script that runs is process. 
+            ps aux|grep 'node' 
+            we can access process information in code using node.js 
+            console.log(process.pid);
+            process.cwd()
+
+        -- global 
+            browser js puts everything into its global scope by default. 
+            in nodejs everything is local by default. we have global object 
+            to access globals. and we can also use export. 
+
+        -- module.exports and exports:
+            browser JS has no way to include modules. CommonJS (www.commonjs.org)
+            and requirejs(requirejs.org) solve the problem with AJAX-y. 
+            nodejs borrowed many things from commonJS. 
+            To export an object in Node.js, use exports.name = object
+
+            var messages = {
+            find: function(req, res, next) {
+            ...
+            },
+            add: function(req, res, next) {
+            ...
+            },
+            format: 'title | date | author'
+            }
+            exports.messages = messages;
+            var messages = require('./routes/messages.js');
+            
+            module.exports = function(app) {
+                app.set('port', process.env.PORT || 3000);
+                app.set('views', __dirname + '/views');
+                app.set('view engine', 'jade');
+                return app;
+            }
+
+            var app = express();
+            var config = require('./config/index.js');
+            app = config(app);
+    Core modules and modules in node_modules folder can be user without 
+    using path in require. 
+    While writing path in require, it is recommended to use
+    __dirname and path.join() because it will create proper path 
+    depending on your operating system. 
+    if require() points to a folder node.js tries to read index.js file. 
+
+List of most common functions:
+ARRAY:
+    1. some() and every(): assertions for array items.
+    2. join() and concat(): convertion to String
+    3. pop(), push(), shift() and unshift(): working with stacks and queues 
+    4. map(): model mapping for array items 
+    5. filter(): querying array items. 
+    6. sort(): ordering items. 
+    7. reduce(), reduceRight(): computing 
+    8. slice(): copying 
+    9. splice(): removing 
+    10. indexOf(): lookups of finding the value in the array 
+    11. reverse(): reversing the order 
+    12 The in opeartor: iterating over array items. 
+MATH: 
+    1. random(): random real numbers less than one 
+STRING 
+    1. substr() and substring(): extracting substrings 
+    2. length(): length of the string 
+    3. indexOf(): index of finding the value in the string 
+    4. split(): converting the string to an array 
+We also have setInterval(), setTimeout(), foreach() and some other console methods. 
+
+Node.js Core Modules: 
+    1. http 
+
+        http.createServer(): returns a new web server object 
+        http.listen(): begins accepting connections on the specified port and hostname 
+        http.createClient(): is a client and makes requests to other servers. 
+        http.ServerRequest(): passes incoming requests to request handlers. 
+            data: emmitted when a part of the message body is received 
+            end: emitted exactly once for each request 
+            request.method(): request method as string 
+            request.url(): request URL string 
+        http.ServerResponse(): creates this object internally by an HTTP server 
+            not by the user and is used as an output of request handlers. 
+            response.writeHead(): sends a response header to request 
+            response.write(): sends a response body 
+            response.end(): sends and ends a response body 
+        
+    2. util 
+
+        util module provides utlities for debugging. 
+            util.inspect(): returns a string representation of an object, 
+                which is useful for debugging 
+                
+    3. querystring 
+
+        •	 querystring.stringify(): serializes an object to a query string
+        •	 querystring.parse(): deserializes a query string to an object
+    
+    4. url 
+
+        •	 parse(): takes a URL string and returns an object
+    
+    5. fs 
+
+        fs handles file system operations. There are sync and async methods in it. 
+        •	 fs.readFile(): reads files asynchronously
+        •	 fs.writeFile(): writes data to files asynchronously
+
+Handy Node.js Utilities: 
+    * Crypto: has randomizer, MD5, HMAC-SHA1, and
+        other algorithms
+    * Path: handles system paths 
+    * string decoder: decodes to and from buffer and string types 
+
+Reading to and Writing from File System: 
+
+    var fs = require('fs');
+    var path = require('path');
+    fs.readFile(path.join(__dirname,'/data/customers.csv'),{encoding:'utf-8'},
+        function (err, data) {
+            if(err) throw err;
+            console.log(data);
+        });
+    
+    var fs = require('fs');
+    fs.writeFile('message.txt', 'Hello World!', function (err) {
+    if (err) throw err;
+    console.log('Writing is done.');
+    });
+
+Streaming Data in Node.js 
+    Streaming data is a phrase that means an application processes the data 
+    while it's still receiving it. This feature is useful for extra large datasets 
+    such as video or database migrations. 
+
+    var fs = require('fs');
+    fs.createReadStream('./data/customers.csv').pipe(proess.stdout);
+
+    By default, nodejs uses buffers for streams. Check these out. 
+        http://npmjs.org/stream-adventure 
+        https://github.com/substack/stream-handbook
+
+Taming Callbacks in Node.js: 
+
+    fs.readdir(source, function(err, files) {
+        if (err) {
+            console.log('Error finding files: ' + err)
+        } else {
+            files.forEach(function(filename, fileIndex) {
+                console.log(filename)
+                gm(source + filename).size(function(err, values) {
+                    if (err) {
+                        console.log('Error identifying file size: ' + err)
+                    } else {
+                        console.log(filename + ' : ' + values)
+                        aspect = (values.width / values.height)
+                        widths.forEach(function(width, widthIndex) {
+                            height = Math.round(width / aspect)
+                            console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+                            this.resize(width, height).write(destination + 'w' + width + '_' + filename, function(err) {
+                                if (err) console.log('Error writing file: ' + err)
+                            })
+                        }.bind(this))
+                    }
+                })
+            })
+        }
+    })
+
+Hello World Server with HTTP Node.js Module   
+
+Debugging Node.js :
+    Core Node.js Debugger: a nongraphic user interface minimalist tools that works everywhere 
+
+    var http = require('http');
+    debugger;
+    http.createServer(function (req, res) {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        debugger;
+        res.end('Hello World\n');
+    }).listen(1337, '127.0.0.1');
+    console.log('Server running at http://127.0.0.1:1337/');
+
+    Run this as node debug hello-debug.js 
+
+
+    Node INspector: port of Google Chrome Developer Tools 
+
+    >> npm install -g node-inspector 
+    >> node-inspector //runs the node-inspector 
+    Now, start application in different terminal. 
+    >> node --debug-brk hello-debug.js 
+    or 
+    >> node --debug hello-debug.js 
+    Open http://127.0.0.1:8080/debug?port=5858 or http://localhost:8080/debug?port=5858 in Chrome. 
+    It must be Chrome. 
+
+    IDEs:
+    Nodejs is loaded into memory and interpreted by the platform. 
+
+Watching For File Changes and Restarting the server: 
+    forever: usually used in production 
+    node-dev: >>npm install -g node-dev, >>node-dev program.js 
+    nodemon: 
+    supervisor: 
+    up: now a deprecated module 
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------
+Express.js 4 ----------------------------------------------------------------------------------------
+    based on Node.js http module and Connect components. The components are called middleware 
+and they are cornerstones of the frameworks, configuration over convention. 
+Code without Express: 
+
+    var http = require('http');
+    var util = require('util');
+    var querystring = require('querystring');
+    var mongo = require('mongodb');
+    var host = process.env.MONGOHQ_URL ||
+                'mongodb://@127.0.0.1:27017';
+    //MONGOHQ_URL=mongodb://user:pass@server.mongohq.com/db_name
+    mongo.Db.connect(host, function(error, client) {
+        if (error) throw error;
+        var collection = new mongo.Collection(client,'test_collection');
+        var app = http.createServer(
+        function (request, response) {
+            if (request.method === 'GET' &&
+                request.url === '/messages/list.json') {
+                collection.find().toArray(function(error, results) {
+                    response.writeHead(
+                        200,
+                        {'Content-Type': 'text/plain'}
+                    );
+                    console.dir(results);
+                    response.end(JSON.stringify(results));
+                });
+            };
+            if (request.method === "POST" && 
+                request.url === "/messages/create.json") {
+                request.on('data', function(data) {
+                    collection.insert(querystring.parse(data.toString('utf-8')),
+                        {safe: true},function(error, obj) {
+                            if (error) throw error;
+                            response.end(JSON.stringify(obj));
+                        }   
+                    );
+                });
+            };
+        });
+        var port = process.env.PORT || 5000;
+        app.listen(port);
+    })
+
+Express solves this problem and gives MVC. 
+You can also use either Mongoose or Sequilize library. 
+Some other nodejs frameworks are: 
+    -- derbyjs
+    -- meteor 
+How Express.js works: 
+    has an entry point,usually named as app.js. This is the file 
+    that we start with node command. In this file, we do following.
+    * include third party libraries and own modules such as controllers, utilities 
+      helpers, and modules. 
+    * configure setting such as template engine and its file extension. 
+    * connect to database
+    * define middlewares such as error handlers, static files folder, 
+      cookies. 
+    * define routes 
+    * start the app. 
+    * export the app as module. 
+    This file is read and executed from top to buttom. 
+
+Some examples of middleware: 
+    * parse cookie information and put it in req object for following middleware/routes. 
+    * parse parameter from url and put it in req object. 
+    * get the information from the database on the values of the paramter if the user is 
+      authorized (cookie/session) and put it in req object 
+    * authorize users/requests 
+    * display the data and end the response. 
+
+Express.js installation:
+    * express-generator : a cli code generator, scafolding
+    * express : a local framework. 
+
+Express.js Scaffolding: 
+    command: express [options] [dir|appname]
+    * -e, --ejs: add EJS as template engine (by default, Jade)
+    * H, --hogan: add Hogan.js as engine support 
+    * -c <engine>, --css <engine>: add stylesheet such as LESS, Stylus or 
+      Compass as engine (by default, Plain Css is used)
+    * -f, --force: force app generation on a nonempty directory 
+    Example: creating an app with stylus support
+        >>express -c styl express-styl 
+        >>cd express-styl && npm install
+        >>DEBUG=my-application ./bin/www //to run the app 
+
+Routes in Express.js : 
+    By default, Express.js doesn’t allow developers to route by query string arguments, such as the following:
+    GET: www.webapplog.com/?id=10233
+    GET: www.webapplog.com/about/?author=10239
+    GET: www.webapplog.com/books/?id=10&ref=201
+
+    However, it’s trivial to write your own middleware. It might look like this:
+
+app.use(function (req, res, next) {
+    if (req.query.id) {
+        // process the id, then call next() when done
+    else if (req.query.author) {
+        // same approach as with id
+    else if (req.query.id && req.query.ref) {
+        // process when id and ref present
+    } else {
+        next();
+    }
+});
+app.get('/about', function (req, res, next) {
+ // this code is executed after the query string middleware
+});
+
+Middleware in Express.js:
+
+    The middleware includes pass-through functions that either do something useful or add something helpful to the
+    request as it travels along each of them. For example, bodyParser() and cookieParser() add HTTP request payload
+    (req.body) and parsed cookie data (req.cookie), respectively. And in our app.js, app.use(logger('dev')); is
+    tirelessly printing in the terminal pretty logs for each request. In Express.js 3.x, many of these middleware were part of
+    the Express.js module, but not in version 4.x. For this reason, the generator declared and included, and we installed
+    additional modules like static-favicon, morgan, cookie-parser and body-parser.
+    
+Configuration of Express.js app:
+
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'jade');
+    And in bin/www:
+    app.set('port', process.env.PORT || 3000);
+
+    An ordinary setting involves a name, such as views, and a value, such as path.join(__dirname, 'views'), a
+    path to the folder where the templates/views live.
+    Sometimes there is more than one way to define a certain setting. For example, app.enable('trust proxy') for
+    Boolean flags is identical (aka, sugar-coating) to app.set('trust proxy', true).
+
+
+Route in NodeJS:
+    Routes process requests. The routes are defined in Express.js with 
+    helpers app.VERB(url, fn1, fn2...) where fns are request handlers, 
+    url is on a URL pattern in RegExp and verbs values are follows. 
+    -- all: catch any requests
+    -- get, post, put, patch, del
+    Routes are processed in the order in which they are defined. routes are put after 
+    middleware. But some middleware put after routes for example Error Handler. 
+
+    A single route is used to catch requests of all methods. 
+    
+    app.all('*', (req, res) =<{
+        res.render('index', {msg: 'Welcome to Practical Node.js!'})
+    });
+
+    in res.sender we have
+    1. viewName: a template name with filename extension of if view engine is defined without extension 
+    2. data: an optional object that is passed as locals. 
+    3. callback: an optional function that is called with an error and HTML when the compilation is complete. 
+
+Pug: One template to rule them all. 
+    This 
+    h1 hello 
+    p Welcome to the Practical Node.js ! 
+    produces the following HTML code 
+    <h1>hello</h1>
+    <p>Welcome to the Practical Node.js !</p>
+
+    if we want to output a value of a variable (called locals), we use 
+    =. 
+    p= msg 
+
+
+TDD and BDD for Node.js with Mocha: 
+
+    MOcha is a mature and powerful testing framework for Node.js. To install it globally, simply run the following shell 
+    command. 
+    >> npm i -g mocha@4.0.1 
+
+    With mocha, we get following.
+    Reporting, Asynchronous support, Rich Configurabiliy, Notifications, 
+    Debugger support, Common interface with before, after and hooks like file watcher. 
+
+    Commands: mocha [options]
+    -h //print helps 
+    -V //print version 
+    -r <name> //require module with name 
+    -R <name> //use reporter with the name 
+    -u <name> //use stipulated reporting user interface 
+    -g <pattern> //run tests exclusively with matching pattern 
+    -i //invert the -g pattern 
+    -t <ms>//set the test case time out in ms 
+    -s <ms> //set the test threshold in ms 
+    -w //watch test files for changes while haning on the terminal 
+    -c //enable colors 
+    -C //disable colors 
+    -G //enable MACOS growl notification 
+    -d //enable node.js debugger 
+    --debug-brk //enable the node.js debugger breaking on the first line 
+    -b //exit after the first test failure 
+    -A //set all the tests in async mode 
+    --recursive //use tests in subfolders 
+    --globals <name> //provide comma-separated gloabl names 
+    --check-leaks //check for leaks in global variables 
+    --interfaces //print available interfaces 
+    --reporters //print available reporters 
+    --compiler <ext>;<module>,...//provide compiler to use 
+
+    Following are laternatives to Mocha: 
+    Jest: mostly React and browser testing 
+    Jasmine: A BDD framework for Node and browser testing 
+    Vows: for async testing 
+    Encyme: mostly for React apps. 
+    Karma: mostly for Angular apps 
+    TAP: A test anything protocol library 
+
+    suite: describe 
+    test: it 
+    setup: before 
+    teardown: after 
+    suiteSetup: beforeEach 
+    suiteTeardown: afterEach 
+
+describe('homepage', () => {
+    it('should respond to GET', (done) => {
+        superagent
+            .get(`http://localhost:${port}`)
+            .end((error, response) => {
+                expect(response.status).to.equal(200)
+            done()
+        })
+    })
+})
+
+TDD With Assert: 
+    Assert is NOde.js core library. 
+    To run test run this. 
+    >> mocha test-assert //this will run all the test inside that folder. 
+Chai Assert: 
+    Chai library has expect, assert and should module. People prefer Chai over 
+    assert because chai assert has more features. 
+
+    const assert = require('assert')
+    >>npm install chai@4.1.2 
+    Chai has following module.
+
+    1. assert(expression, message) //throws an error if expression is false. 
+    2. assert.fail(actual, expected, [message], [oprator]) //throws an error with 
+        the values of actual, expected and operator 
+    3. assert.ok(object,[message]) //throws an error when object is not double equal (==) 
+        to true [truthy] [0, and empty string are false in JS ]
+    4. assert.notok(object, [message]) //throws an error when object is falsy ie false, 0,
+        empty string, null, undefined or NaN. 
+    5. assert.equal(actual,expected,, [message])
+    6. assert.notEqual(actual,expected, [message])
+    7. .strictEqual(actual, expected, [message])
+
+BDD With Expect: 
+    standaone: install expect.js module 
+    Chai: install as a part of Chai library (recommened)
+    >>npm init -y 
+    >>npm install chai@4.1.2 --save-exact 
+
+
+blog-express:
+ >>npm install
+ >>mocha tests 
+ >>make <mode> //to launch makefile [here makefile is for reporting test]
+    <mode> could be test, test-w, test-module-a, test-module-b 
+ >>make test 
+
+
+
+
+-----------------------------------------------------------------
+-------------Template Engines [Pug]------------------------------------
+
+Pug Syntax : https://pugjs.org/api/reference.html
+
+Tags: 
+    Any text at the begining of a line by default is interpreted as an HTML tag. 
+    The text following tag and a space is parsed as inner HTML. 
+
+    An example: 
+---------------------------------------------------------
+    doctype html 
+    html (lang="en")
+      head
+        title Why JS is awesome
+        script (type='text/javascript').
+            const a = 1
+            console.log('Some js code and value of a is ${a}')
+      body
+        h1 Why JS is awesome 
+        div (id="container", class="col")
+          p You are amazing 
+          p Get on it !
+          p.
+            JS is fun. Almost everything 
+            can be written in JS. 
+--------------------------------------------------------
+
+#container.col 
+  p you are amazing 
+  p Get on it ! 
+
+Compile time and run time JavaScript in Pug with . and - syntax. 
+
+Interpolation is mixing of string and variables. 
+
+Template Usage in Express.js : 
+    By default, express.js uses either a template extension provided in 
+    response.render method or set by the view engine setting. For express.js to 
+    utilize template engine library out of the box, that library needs to have 
+    __express method. When the template engine library does not provide the __express 
+    method, it is recommended that you use Consolidate.js . 
+    https://github.com/visionmedia/consolidate.js/ 
+
+----------------------------------------------------------------------------------
+-------------Persistence with MongoDB and Mongosin--------------------------------
+
+NoSQL databases also called non-relational databases, are more horizontally scalable, and better suited 
+for distributed system than traditional SQL ones. NoSQL built in a way that they allow data duplication and 
+can be well tailored to specific queries. This process is called 
+denormalization. It is often case that NoSQL databases deal routinely with 
+larger data sizes than traditional ones. 
+NoSQL DBs are schemaless. There is no table, just a simple store 
+indexed by IDs. 
+
+MongoDB is a document store as oppose to key value and wide-column store 
+NoSQL databases [ http://nosql-database.org] 
+
+Installing MongoDB: 
+    http://docs.mongodb.org/manual/installation
+
+
+For Debian: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/ 
+And 
+    $ sudo mkdir -p /data/db
+    $ sudo chown `id -u` /data/db
+To start mongodb
+>> mongod 
+MongoDB client >>mongo 
+    Mongo Client is JavaScript. 
+    Some client commands: 
+    1. help //prints list of available commands. 
+    2. show dbs //prints the names of the databases. 
+    3. use db_name //switch to db_name 
+    4. show collections //prints list of collections in the selected database 
+    5. db.collection_name.find(query) //find all items matching query 
+    6. db.collection_name.findOne(query) //find one items that matches the query 
+    7. db.collection_name.insert(document) //adds a document to the collection_name 
+    8. db.collection_name.save(document) //adds document to the collection_name
+    9. db.collection_name.update(query, {$set: data}) //updates items that match query in the collection_name 
+        that match query with data object values 
+    10. db.collection_name.remove(query) //removes all items from collection_name 
+    11. printjson(document) //prints the variable document 
+
+    save() works like upsert(). 
+
+db.test.save({a:1}) //to create record 
+db.test.find() //to retrieve records. 
+
+>>  mongoimport --db dbName --collection collectionName
+--file fileName.json --jsonArray 
+
+npm install mongodb@2.2.33 -SE 
+
+Main Mongoskin Methods: 
+    It provides a better API than the native MongoDB driver. 
+    >> npm i mongoskin@2.1.0 -SE 
+
+Only Mongoskin methods: 
+    1. findItems(...,callback) //find elements and returns an array instead of cursor 
+    2. findEach(..., callback) //iterates through each found elments 
+    3. findById(id,...,callback) //find by _id in a string format 
+    4. updateById(_id,...,callback) //update elements with a matching _id 
+    5. removeById(_id, ..., callback) //removes an elment with a matching _id 
+
+Alternatives to MongoSkin : 
+1. Mongoose //an async JS driver with optional support for modeling (recommended for large apps)
+2. Mongolia //a light weight MongoDB ORM wrapper 
+3. monk //a tiny layer that provides simple yet substantial usability improvements for MongDB 
+
+Data validation: 
+1. node-validator //validates data 
+2. express-valiator //validates data in Express.js 
+
+
+-----------------------------------------------
+------------Security and Auth in Node.js-------
+    Token based authentication and OAuth (http://oauth.net)
+
+Authorization with Express.js Middleware: 
+    Authorization in web apps usually means restricting certain functions to 
+    privileged clients. Express.js middleware allows us to apply certain rules 
+    seamlessly to all routes, group of routes(namespacing), or individual routes. 
+    1. all routes: app.get('*',auth)
+    2. group of routes: app.get('/api/*', auth)
+    3. individual routes: app.get('/admin/users/',auth)
+
+app.all('/api/*',auth)
+app.use('/api',auth) 
+both above does the same thing 
+
+Another way of doing the same thing is to use auth middleware on each route which 
+requires it. 
+
+app.get('/',home) //no auth needed 
+app.get('/api/users',auth, users.list) //auth needed 
+app.post('/api/users',auth, users.create) //auth needed 
+
+In above example, auth() is a function with three parameters: req, res, and next. 
+
+const auth = (req, res, next) => {
+    //...
+    //Assuming you get user profile and user.auth is true or false 
+    if (user.auth) return next();
+    else next(new Error('Not Authorized'))
+}
+
+Token-Based Authentication: 
+    The most common authentication is Cookie&session-based authentication. 
+    The token can be passed in a query string or in HTTP request headers. Alternatively, 
+    we can send some other authentication combination of information, 
+    such as email/username and password or API key or API password instead of 
+    token. 
+
+    const auth = (req, res, next) => {
+        if (req.query.token && token === SECRET_TOKEN) {
+        // client is fine, proceed to the next route
+            return next()
+        } else {
+            return next(new Error('Not authorized'))
+            // or res.send(401)
+        }
+    }
+
+
+Session-Based Authentication: JWT Authenctication
+    Developers use JWT to encrypt data, which is then stored on the client. 
+    JWT have all the information unlike regular tokens (API Keys or OAuth 
+    Access tokens) which are more like passwords. Thus JWT remove the need for 
+    a database to store user information. 
+
+    In my opinion, JWT is less secure than web sessions. This is because web sessions
+    store the data on the server (usually in a database) and only store a session ID on the
+    client. Despite JWT using encryption, anyone can break any encryption given enough
+    time and processing power.
+
+    JWT has three part; header, payload and signature. 
+
+    app.post('/auth/register', (req, res) => {
+        bcrypt.hash(req.body.password, 10, (error, hash)=>{
+        if (error) return res.status(500).send()
+        users.push({
+            username: req.body.username,
+            passwordHash: hash
+        })
+        res.status(201).send('registered')
+        })
+    })
+
+
+
+    app.post('/auth/login', (req, res) => {
+        const foundUser = users.find((value, index, list) => {
+            if (value.username === req.body.username) return true
+            else return false
+        })
+        if (foundUser) {
+            bcrypt.compare(req.body.password, foundUser.passwordHash,
+                (error, matched) => {
+                if (!error && matched) {
+                    res.status(201).json({token: jwt.sign({ username:
+                    foundUser.username}, SECRET)})
+                } else res.status(401).send()
+            })
+        } else res.status(401   ).send()
+    })
+
+JWT Uses special value secret to encrypt data. Authenticating using JWT. 
+
+const auth = (req, res, next) => {
+    if (req.headers && req.headers.auth && req.headers.auth.split(' ')
+        [0] === 'JWT') {
+        jwt.verify(req.headers.auth.split(' ')[1], SECRET, (error,
+            decoded) => {
+            if (error) return res.status(401).send()
+            req.user = decoded
+            console.log('authenticated as ', decoded.username)
+            next()
+        })
+    }
+    else return res.status(401).send()
+}
+
+Explanation of JWT Examples: 
+    1. curl http://localhost:3000/Courses gives hardcoded list of Courses 
+    2. curl -X POST -H 'Content-Type: application/json' -d '{"title":"RANDOM"}' http://localhost:3000/Courses 
+        will give you 401 not authorized. 
+    3. curl -X POST -H 'Content-Type: application/json' -d '{"username":"davidwalsh","password":"something"}' http://localhost:3000/auth/register
+        will give you registered. 
+    4. curl -X POST -H 'Content-Type: application/json' -d '{"username":"davidwalsh","password":"something"}' http://localhost:3000/auth/login
+        This is give you jwt token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhdmlkd2Fsc2giLCJpYXQiOjE1NjgxNzM2MDN9.7J321k3F44aAplel8x6g-AtAmIiv2WkfD7YiDnA7wYU 
+    5. curl http:/--header 'auth: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhdmlkd2Fsc2giLCJpYXQiOjE1Njg0MzI5MDh9.eE0XGQZPHHFegZnl_GznJgXupqLde6ANHZNw17PJ8uo' -X POST -H 'Content-Type: application/json' -d '{"title":"RANDOM"}' http://localhost:3000/Courses
+       This post request will be authorized with token and courses will be added. 
+    6. curl http://localhost:3000/Courses gives recently added courses. 
+   
+Session Based Authentication: [better than JWT based because JWT is stored on client site]
+    Done via session object. A web session in general is a secure way to store information about a client so that
+subsequent requests from that same client can be identified.
+In express, we need to require two modules to enable sessions. 
+1. cookie-parser : allows for parsing of the client request cookies 
+2. express-session : res.session in each request handler, and stores data in the app 
+                    memory or some other persistent store like MongoDB or Redis. 
+In express-session version 1.5.0 and higher, ther's no need to add the cookie-parser middleware. 
+Use cases: 
+    const cookieParser = require('cookie-parser');
+    const session = require('express-session')
+    ...
+    app.use(cookieParser())
+    app.use(session())
+
+    We can store any data in req.session and it appears automatically on each request from the same client
+    (assuming their browser supports cookies). 
+
+    app.post('/login', (req, res, next) => {
+        if (checkForCredentials(req)) {
+        // checkForCredentials checks for credentials passed in the
+        request's payload
+            req.session.auth = true
+            res.redirect('/dashboard') // Private resource
+        } else {
+            res.status(401).send() // Not authorized
+        }
+    });
+
+Warning: Avoid storing any sensitive information in cookies. 
+The best practice is not to store any info in cookies manually, except 
+session ID. which express.js middleware stores for us manually. Because 
+cookies are not secure. Also, cookies have a size limitation that is very 
+easy to reach and which varies by browser with internet explorer havig the 
+smalles limit. 
+
+By default, Express.js uses in memory session storage. This means that everytime an app.js 
+restarted or crashes, the sessions are wiped out. To make sessions 
+persistent and available across multiple servers, we can use a database such as 
+Redis or MongoDB as a session store. 
+We can also use Redis for caching. 
+
+Session Middleware: 
+    const cookieParser = require('cookie-parser');
+    const session = require('express-session')
+
+    //Other middleware 
+
+    app.use(cookieParser('3CCC4ACD-6ED1-4844-9217-82131BDCB239'))
+    app.use(session({secret: '2C44774A-D649-4D44-9535-46E296EF984F'}))
+
+    session() must be preceded by cookieParser() because session depends on cookies 
+    to work properly. 
+
+    You can also use cookieSession but it is not recommended. 
+    const cookieSession = require('cookie-session')
+    app.use(cookieSession({secret: process.env.SESSION_SECRET}))
+    This is useful to pass request authentication information to the templates. 
+
+    app.use(function(req, res, next) {
+        if (req.session && req.session.admin)
+            res.locals.admin = true
+        next()
+    })
+
+    Authorization: 
+        // Authorization
+        const authorize = (req, res, next) => {
+            if (req.session && req.session.admin)
+                return next()
+            else
+                return res.send(401)
+        }
+
+    app.get('/admin', authorize, routes.article.admin)
+    app.get('/post', authorize, routes.article.post)
+    app.post('/post', authorize, routes.article.postArticle)
+
+    app.all('/api', authorize)
+    app.get('/api/articles', routes.article.list)
+    app.post('/api/articles', routes.article.add)
+    app.put('/api/articles/:id', routes.article.edit)
+    app.delete('/api/articles/:id', routes.article.del)
+
+
+The Oath Module: 
+    It is a model that generates signatures, encryptions, and HTTP headers and make 
+requests. 
+    Twitter OAuth 2.0 
+
+    const OAuth = require('oauth')
+    const OAuth2 = OAuth.OAuth2
+    const twitterConsumerKey = 'your key'
+    const twitterConsumerSecret = 'your secret'
+    const oauth2 = new OAuth2(twitterConsumerKey,
+        twitterConsumerSecret,
+        'https://api.twitter.com/',
+        null,
+        'oauth2/token',
+        null
+    )
+
+    oauth2.getOAuthAccessToken(
+        '',
+        {'grant_type': 'client_credentials'},
+        function (e, access_token, refresh_token, results) {
+            console.log('bearer: ', access_token)
+            // Store bearer
+            // Make OAuth2 requests using this bearer to protected endpoints
+        }
+    )
+
+EveryAUth: 
+    This allows for multiple OAuth strategies to be implemented and 
+    added to any Express.js. in just few lines of code. 
+    
+
+-----------------------------------------------------
+MONGOOSE-------------------------------------------
+    Mongoose is fully developed object document model (ODM). The disadvantage of 
+    Mongoose is that it could make certain queries slower due to a lot of code that 
+    Mongoose has to go through. 
+    The main benefit of Mongoose is that it abstracts everything from the database, and
+    the application code interacts only with objects and their methods. ODM also allows
+    specifying relationships between different types of objects and putting business logic
+    (related to those objects) in the classes.
+    In addition, Mongoose has built-in validation and type casting that can be extended
+    and customized according to needs. When used together with Express.js, Mongoose
+    makes the stack truly adherent to the MVC concept.
+    Also, Mongoose uses a similar interface to those of Mongo shell, native MongoDB
+    driver, and Mongoskin. Mongoose provides its own methods while making available
+    methods from the native driver. The main Mongoose functions such as find, update,
+    insert, save, remove, and so on, do what you they say they do. It’ll help us to get
+    started with Mongoose faster.
+
+    >> npm init -y 
+    >> npm i mongoose@4.13.0 -SE 
+
+Mongoose Schemas: 
+    Mongoose data types: 
+    1. string 
+    2. number 
+    3. boolean 
+    4. buffer: binary type images, PDFs, archives 
+    5. Date: 
+    6. Array 
+    7. Schema.Types.ObjectId 
+    8. Schema.Types.Mixed : any type of data 
+Warning Mongoose does not listen to mixed-type object changes, so call
+markModified() before saving the object to make sure changes in the mixedtype field are persistent. 
+We can also define default values in Schema. 
+We can define a function as a default value too. 
+
+
+const ObjectId = mongoose.Schema.Types.ObjectId
+const Mixed = mongoose.Schema.Types.Mixed
+const bookSchema = mongoose.Schema({
+    name: String,
+    created_at: Date,
+    updated_at: {
+        type: Date,
+        default: Date.now // Current timestamp
+    },
+    published: Boolean,
+    authorId: {
+        type: ObjectId,
+        required: true // Require field
+    },
+
+    description: {
+        type: String,
+        default: null
+    },
+    active: {
+        type: Boolean,
+        default: false
+    },
+    keywords: { // Array of strings
+        type: [String],
+        default: []
+    },
+    description: {
+        body: String,
+        image: Buffer // Binary or string data
+    },
+    version: {
+        type: Number,
+        default: () => { // Dynamic value
+            return 1
+        }
+    },
+    notes: Mixed,
+    contributors: [ObjectId]
+});
+
+
+Hooks for keeping code organized: 
+    bookSchema.pre('save', (next) => {
+        // Prepare for saving
+        // Upload PDF
+        return next()
+    })
+
+    bookSchema.pre('remove', (next) => {
+        // Prepare for removing
+        return next(e) // e is an instance of Error or null
+    })
+
+Custom Static and Instance Methods: 
+
+    bookSchema.method({ // Instance methods
+        buy: function (quantity, customer, callback) {
+            const bookToPurchase = this // Exact book with id, title, etc.
+            // Create a purchase order and invoice customer
+            // Any document/instance method like save, valid, etc.
+            will work on "this"
+            return callback(results)
+        },
+        refund: function (customer, callback) {
+            // Process the refund
+            return callback(results)
+        }
+    })
+
+
+
+
+    bookSchema.static({ // Static methods for generic, not instance/
+        document specific logic
+        getZeroInventoryReport: function(callback) {
+            // Run a query on all books and get the ones with zero inventory
+            // Document/instance methods would not work on "this"
+            return callback(books)
+        },
+        getCountOfBooksById: function(bookId, callback){
+            // Run a query and get the number of books left for a given book
+            // Document/instance methods would not work on "this"
+            return callback(count)
+        }
+    })
+
+
+    • Model.create(data, [callback (error, doc)]): Creates a
+    new Mongoose document and saves it to the database
+    • Model.remove(query, [callback(error)]): Removes
+    documents from the collection that match the query; when finished,
+    calls callback with error
+    • Model.find(query, [fields], [options], [callback(error,
+    docs)]): Finds documents that match the query (as a JSON object);
+    possible to select fields (http://mongoosejs.com/docs/api.
+    html#query_Query-select) and use options (http://bit.ly/
+    2QUNBNx)
+    • Model.update(query, update, [options],
+    [callback(error, affectedCount, raw)]): Updates
+    documents, similar to native update
+    • Model.populate(docs, options, [callback(error, doc)]):
+    Populates documents using references to other collections; an
+    alternative to another approach described in the next section
+    • Model.findOne(query, [fields], [options],
+    [callback(error, doc)]): Finds the first document that matches
+    the query
+    • Model.findById(id, [fields], [options], [callback(error,
+    doc)]): Finds the first element for which _id equals the id argument
+    (cast based on the schema)
+    • Model.findOneAndUpdate([query], [update], [options],
+    [callback(error, doc)]): Finds the first document that matches
+    the query (if present) and updates it, returning the document; uses
+    findAndModify (http://bit.ly/2QW1zP1)
+    • Model.findOneAndRemove(query, [options],
+    [callback(error, doc)]): Finds the first document that matches
+    the query and removes it when returning the document
+    • Model.findByIdAndUpdate(id, [update], [options],
+    [callback(error, doc)]): Similar to findOneAndUpdate using
+    only the ID
+    • Model.findByIdAndRemove(id, [options], [callback(error,
+    doc)]): Similar to findOneAndRemove using only the ID
+
+
+
+    doc.model(name): Returns another Mongoose model
+    • doc.remove([callback(error, doc)]): Removes this document
+    • doc.save([callback(error, doc, affectedCount)]): Saves
+    this document
+    • doc.update(doc, [options], [callback(error,
+    affectedCount, raw)]): Updates the document with doc
+    properties, and options parameters, and then upon completion
+    fires a callback with error, number of affectedCount, and the
+    database output
+    • doc.toJSON([option]): Converts a Mongoose document to JSON
+    (options are listed later)
+    • doc.toObject([option]): Converts a Mongoose document to a
+    plain JavaScript object (options are listed later)
+    • isModified([path]): True/false, respectively, if some parts (or the
+    specific path) of the document are or are not modified
+    • markModified(path): Marks a path manually as modified, which is
+    useful for mixed ( Schema.Types.Mixed ) data types because they
+    don’t trigger the modified flag automatically
+    • doc.isNew: True/false, respectively, whether the document is new or
+    not new
+    • doc.id: Returns the document ID
+    • doc.set(path, value, [type], [options]): Sets value at a
+    path
+    • doc.validate(callback(error)): Checks validation manually
+    (triggered automatically before save() )
+
+
+    getters: True/false, calls all getters including path and virtual
+    types
+    • virtuals: True/false, includes virtual getters and can override the
+    getters option
+    • minimize: True/false, removes empty properties/objects (defaults to
+    true)
+    • transform: Transforms the function called right before returning the
+    object
+
+Relationships and Joins With Population: 
+
+    const mongoose = require('mongoose')
+    const Schema = mongoose.Schema
+    const userSchema = Schema({
+        _id: Number,
+        name: String,
+        posts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }]
+    })
+
+
+    const postSchema = Schema({
+        _creator: { type: Number, ref: 'User' },
+        title: String,
+        text: String
+    })
+
+
+    const Post = mongoose.model('Post', postSchema)
+    const User = mongoose.model('User', userSchema)
+    User.findOne({ name: /azat/i })
+        .populate('posts')
+        .exec((err, user) => {
+        if (err) return handleError(err) // Defined elsewhere
+        console.log('The user has % post(s)', user.posts.length)
+    })
+
+
+
+    .populate({
+        path: 'posts',
+        options: { limit: 10, sort: 'title' }
+    })
+
+
+    .populate({
+        path: 'posts',
+        select: 'title',
+        options: {
+            limit: 10,
+            sort: 'title'
+        }
+    })
+
+
+
+    .populate({
+        path: 'posts',
+        select: '_id title text',
+        match: {text: /node\.js/i},
+        options: {
+            limit: 10,
+            sort: '_id'
+        }
+    })
+
+
+
+    User.find({}, {
+    limit: 10,
+    sort: { _id: -1}})
+    .populate('posts')
+    .exec((err, user) => {
+        if (err) return handleError(err)
+        console.log('The user has % post(s)', user.posts.length)
+    })
+
+
+
+Nested Documents: 
+
+    const userSchema = new mongoose.Schema({
+        name: String,
+        posts: [mongoose.Schema.Types.Mixed]
+    })
+    // Attach methods, hooks, etc.
+    const User = mongoose.model('User', userSchema)
+
+    const postSchema = new mongoose.Schema({
+        title: String,
+        text: String
+    })
+    // Attach methods, hooks, etc., to post schema
+    const userSchema = new mongoose.Schema({
+        name: String,
+        posts: [postSchema]
+    })
+    // Attach methods, hooks, etc., to user schema
+    const User = mongoose.model('User', userSchema)
+
+
+    User.update(
+        {_id: userId},
+        {$push: {posts: newPost}},
+        function (error, results) {
+        // Handle error and check results
+    })
+
+
+Virtual Fields: 
+    These are the fields that do not exist in databse, but act just like 
+    regular fields in Mongosse document model. 
+
+    const crypto = require('crypto')
+    Identity.virtual('gravatarUrl')
+        .get(function() { // Not fatty catty ()=>{}
+        if (!this.email) return null // "this" is an instance/document
+        let email = this.email // For example: email = "HI@azat.co "
+        email = email.trim().toLowerCase()
+        const hash = crypto
+        .createHash('md5')
+        .update(email)
+        .digest('hex')
+        const gravatarBaseUrl = 'https://secure.gravatar.com/avatar/'
+        return gravatarBaseUrl + hash
+    })
+
+
+    userSchema.virtual('fullName')
+        .get(function() {
+        // "this" is an instance/document
+        return `${this.firstName} ${this.lastName}`
+    })
+
+
+
+    userSchema.virtual('info')
+    .get(function() {
+        return {
+            service: this.service,
+            username: this.username,
+            name: this.name,
+            date: this.date,
+            url: this.url,
+            avatar: this.avatar
+        }
+    })
+
+
+Schema Type Behavior Amendment: 
+    Mongoose offers four methods: set(), get(), default() and validate(). 
+    • set(): To transform a string to a lower case when the value is
+    assigned
+    • get(): To add a “thousands” comma to a number when the number
+    is extracted/accessed
+    • default(): To generate a new ObjectId,
+    • validate(): To check for email patterns; is triggered upon save()
+
+    postSchema = new mongoose.Schema({
+        slug: {
+            type: String,
+            set: function(slug) {
+                return slug.toLowerCase()
+            }
+        },
+        numberOfLikes: {
+            type: Number,
+            get: function(value) {
+                return value.toString().replace(/\B(?=(\d{3})+
+                (?!\d))/g, ",")
+            }
+        },
+        posted_at: {
+            type: String,
+            get: function(value) {
+                if (!value) return null;
+                return value.toUTCString()
+            }
+        },
+        authorId: {
+            type: ObjectId,
+            default: function() {
+                return new mongoose.Types.ObjectId()
+            }
+        },
+        email: {
+            type: String,
+            unique: true,
+            validate: [
+                function(email) {
+                    return (email.match(/[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.
+                    [a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*
+                    [a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i) != null)},
+                    'Invalid email'
+            ]
+        }
+    })
+
+
+
+    userSchema
+        .path('numberOfPosts')
+        .get(function() {
+            return this.posts.length
+    })
+
+    Installation: 
+        $ npm uninstall mongoskin –save
+        $ npm install mongoose@4.13.0 --save
+
+-----------------------------------------------------------------------------
+Building Node.js REST API Servers with Express.js and Hapi     
+
+Advantage of thick-client approach: 
+    1. Single Page Applications 
+    2. Smaller bandwidth 
+    3. Same back end can server multiple client apps 
+
+Hapi REST API Server: 
+    Hapi is an enterprise-grade framework. It's more complex and feature rich than Express.js 
+    and it's easier to develop in large teams. Hapi was started by (and used at) Walmart Labs 
+    that support Walmart's heavily trafficked e-commerce website. 
+
+
+Real-Time Apps With WebSocket, Socket.IO and DerbyJS 
+    DerbyJS: 
+        The DerbyJS shares code smartly between the browser and the server, so you can write functions 
+        and methods in one place (a Node.js file). 
+        starting databases: 
+            >>mongod 
+            >>redis- server 
+
+Making Node.js Production Ready: 
+ 
